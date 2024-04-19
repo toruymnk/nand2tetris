@@ -1,1 +1,1 @@
-# nand2tesris
+# nand2pong
