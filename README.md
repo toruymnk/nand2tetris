@@ -1,1 +1,1 @@
-# nand2pong
+# nand2tetris
