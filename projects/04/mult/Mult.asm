@@ -7,27 +7,24 @@
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 // The algorithm is based on repetitive addition.
 
-    @i
+    @R2  // Initialize R2
     M=0
-    @R2
-    M=0
-(LOOP)
-    @i
+    @R0  // If R0 is less than or equal to 0, jump to END
     D=M
-    @R1
-    D=D-M
     @END
-    D;JGE
-    @R2
+    D;JLE
+(LOOP)
+    @R1  // Use R1 as a counter
+    M=M-1
     D=M
+    @END
+    D;JLT
     @R0
-    D=D+M
+    D=M
     @R2
-    M=D
-    @i
-    M=M+1
+    M=M+D
     @LOOP
     0;JMP
 (END)
-    @END
-    0;JMP  // Infinite loop
+    @END  // Infinite loop
+    0;JMP
