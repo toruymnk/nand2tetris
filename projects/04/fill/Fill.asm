@@ -8,11 +8,11 @@
 // i.e. writes "black" in every pixel. When no key is pressed, 
 // the screen should be cleared.
 
-    @SCREEN
+    @SCREEN  // R0 holds the terminal address of the screen
     D=A
     @8192
     D=D+A
-    @R0  // R0 holds the terminal address of the screen
+    @R0
     M=D
 (LOOP)
     @KBD
@@ -24,14 +24,11 @@
 (FILL)
     @SCREEN
     D=A
-    @R1
-    M=D
 (FILL_LOOP)
-    @R2
     A=D
     M=-1
-    @R1
-    M=M+1
+    @R1  // R1 points to the next address
+    M=D+1
     D=M
     @R0
     D=M-D
@@ -44,14 +41,11 @@
 (CLEAR)
     @SCREEN
     D=A
-    @R1
-    M=D
 (CLEAR_LOOP)
-    @R2
     A=D
     M=0
-    @R1
-    M=M+1
+    @R1  // R1 points to the next address
+    M=D+1
     D=M
     @R0
     D=M-D
