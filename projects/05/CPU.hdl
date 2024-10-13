@@ -32,5 +32,40 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-	//// Replace this comment with your code.
+    Not(in=instruction[15], out=isA);
+    Not(in=isA, out=isC);
+    And(a=isC, b=instruction[12], out=a);
+    And(a=isC, b=instruction[11], out=zx);
+    And(a=isC, b=instruction[10], out=nx);
+    And(a=isC, b=instruction[9], out=zy);
+    And(a=isC, b=instruction[8], out=ny);
+    And(a=isC, b=instruction[7], out=f);
+    And(a=isC, b=instruction[6], out=no);
+    And(a=isC, b=instruction[5], out=dstA);
+    And(a=isC, b=instruction[4], out=dstD);
+    And(a=isC, b=instruction[3], out=writeM);
+    And(a=isC, b=instruction[2], out=jmpLt);
+    And(a=isC, b=instruction[1], out=jmpEq);
+    And(a=isC, b=instruction[0], out=jmpGt);
+
+    Mux16(a=instruction, b=outALU, sel=dstA, out=inA);
+
+    Or(a=isA, b=dstA, out=ldA);
+    ARegister(in=inA, load=ldA, out=outA, out[0..14]=addressM);
+
+    Mux16(a=outA, b=inM, sel=a, out=muxAM);
+
+    DRegister(in=outALU, load=dstD, out=outD);
+
+    ALU(x=outD, y=muxAM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=outM, out=outALU, zr=zr, ng=ng);
+
+    And(a=jmpLt, b=ng, out=isLt);
+    And(a=jmpEq, b=zr, out=isEq);
+    Or(a=zr, b=ng, out=orZrNg);
+    Not(in=orZrNg, out=pz);  // When both zr and ng are false, it is positive (pz).
+    And(a=jmpGt, b=pz, out=isGt);
+    Or(a=isLt, b=isEq, out=isLe);
+    Or(a=isLe, b=isGt, out=jmp);
+
+    PC(in=outA, inc=true, load=jmp, reset=reset, out[0..14]=pc);
 }
