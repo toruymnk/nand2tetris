@@ -32,6 +32,7 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+    // Decode instruction
     Not(in=instruction[15], out=isA);
     Not(in=isA, out=isC);
     And(a=isC, b=instruction[12], out=a);
@@ -59,6 +60,7 @@ CHIP CPU {
 
     ALU(x=outD, y=muxAM, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no, out=outM, out=outALU, zr=zr, ng=ng);
 
+    // Determinate of whether a jump can be made
     And(a=jmpLt, b=ng, out=isLt);
     And(a=jmpEq, b=zr, out=isEq);
     Or(a=zr, b=ng, out=orZrNg);
